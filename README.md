@@ -18,6 +18,7 @@ Attention! 11000px option produces 150+MB images!
 * [ ] Custom save location and file names
 * [ ] Zoomable preview window
 * [ ] Update progress bar corresponding to status
+* [ ] Make saving a new thread so the UI doesn't become unresponsive
 
 # Download
 Get the latest version from the releases page: https://github.com/LsHallo/HimawariDownloader/releases
