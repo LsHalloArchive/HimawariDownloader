@@ -61,6 +61,10 @@ public class Downloader extends Thread {
 		System.out.println("Thread " + getName() + " is done!");
 	}
 
+    /**
+     * Returns the image array that is saved in the downloader instance
+     * @return Image[] the downloaded images
+     */
 	private Image[] getResult() {
 		return result;
 	}
