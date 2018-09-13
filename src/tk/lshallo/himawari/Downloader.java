@@ -130,9 +130,9 @@ public class Downloader extends Thread {
 			int row = d.getRow();
 			Image[] result = d.getResult();
 			
-			for(int l = 0; l < res; l++) {
-				System.out.println("Copying image " + l + " from thread " + d.getName() + " to src[" + (row * res + l) + "]");
-				src[row * res + l] = result[l];
+			for(int i = 0; i < res; i++) {
+				System.out.println("Copying image " + i + " from thread " + d.getName() + " to src[" + (row * res + i) + "]");
+				src[row * res + i] = result[i];
 			}
 		}
 		
