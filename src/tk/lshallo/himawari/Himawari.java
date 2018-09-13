@@ -8,10 +8,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
  
 public class Himawari extends Application {
-	
+
+	static UI controller;
+
     @Override
     public void start(Stage stage) {
-		UI controller = new UI();
+		controller = new UI();
 		
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("UI.fxml"));

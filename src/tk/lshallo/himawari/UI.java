@@ -26,7 +26,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
-public class UI {
+class UI {
 
     @FXML
     private MenuItem MenuItemSaveAs;
@@ -64,9 +64,9 @@ public class UI {
     @FXML
     private ProgressIndicator Spinner;
     
-    BufferedImage result;
-    Downloader dl = new Downloader();
-    protected DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm");
+    private BufferedImage result;
+    private Downloader dl = new Downloader();
+    private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm");
     
     void setup() {
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Thumbnail (550px)", 1));
@@ -87,6 +87,7 @@ public class UI {
     	setButtons(false);
     	ButtonSaveImage.setDisable(true);
     	progressBar.setProgress(0d);
+    	progress = 0;
     	ResolutionChoice resolution = ChoiceBoxResolution.getValue();
 
 		new Thread(() -> {
@@ -150,7 +151,7 @@ public class UI {
     	
     }
     
-    void setButtons(boolean state) {
+    private void setButtons(boolean state) {
     	Spinner.setVisible(!state);
     	ButtonDownload.setDisable(!state);
     	ButtonShowPreview.setDisable(!state);
@@ -170,4 +171,14 @@ public class UI {
     void updateTime(ActionEvent event) {
 
     }
+
+    private int progress = 0;
+
+    synchronized void increaseProgress() {
+        int resolution = ChoiceBoxResolution.getValue().getValue();
+        int totalImages = resolution * resolution;
+        progress++;
+
+        progressBar.setProgress((double)progress / (double)totalImages);
+	}
 }

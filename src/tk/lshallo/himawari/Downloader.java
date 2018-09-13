@@ -24,7 +24,6 @@ import javax.imageio.ImageIO;
  */
 
 public class Downloader extends Thread {
-	final int imgWidth = 550, imgHeight = 550;
 	private int row, num;
 	private LocalDateTime dt = LocalDateTime.now();
 	private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy/MM/dd");
@@ -54,6 +53,7 @@ public class Downloader extends Thread {
 					e.printStackTrace();
 				}
 				System.out.println("Thread " + getName() + " has downloaded image " + (i + 1) + "/" + num);
+				Himawari.controller.increaseProgress();
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
@@ -61,11 +61,11 @@ public class Downloader extends Thread {
 		System.out.println("Thread " + getName() + " is done!");
 	}
 
-	public Image[] getResult() {
+	private Image[] getResult() {
 		return result;
 	}
 
-	public int getRow() {
+	private int getRow() {
 		return row;
 	}
 
@@ -75,7 +75,7 @@ public class Downloader extends Thread {
      * @param time LocalDateTime object with time
      * @return BufferedImage image result
      */
-	public BufferedImage single(int res, LocalDateTime time) {
+	BufferedImage single(int res, LocalDateTime time) {
 		dt = primeTime(time);
 		Image[] src = new Image[res * res];
 		
@@ -100,7 +100,7 @@ public class Downloader extends Thread {
      * @param time LocalDateTime object with time
      * @return BufferedImage image result
      */
-	public BufferedImage multi(int res, LocalDateTime time) {
+	BufferedImage multi(int res, LocalDateTime time) {
 		dt = primeTime(time);
 		Image[] src = new Image[res * res];
 		ThreadGroup tg = new ThreadGroup("downloads");
@@ -121,8 +121,7 @@ public class Downloader extends Thread {
 			}
 		}
 		
-		for(int i = 0; i < downloads.size(); i++) {
-			Downloader d = downloads.get(i);
+		for(Downloader d : downloads) {
 			int row = d.getRow();
 			Image[] result = d.getResult();
 			
@@ -143,7 +142,7 @@ public class Downloader extends Thread {
      * @param time LocalDateTime object with date and time
      * @return BufferedImage preview image
      */
-	public BufferedImage preview(LocalDateTime time) {
+	BufferedImage preview(LocalDateTime time) {
 		dt = time;
 		dt = primeTime(dt);
 		
@@ -163,7 +162,9 @@ public class Downloader extends Thread {
      * @param imgArr array of images that need to be stitched (length needs to be width * height)
      * @return BufferedImage with following size: width * imgWidth (constant), height * imgHeight (constant)
      */
-	BufferedImage stitchImage(int width, int height, Image[] imgArr) {
+	private BufferedImage stitchImage(int width, int height, Image[] imgArr) {
+		final int imgWidth = 550, imgHeight = 550;
+
 		BufferedImage out = new BufferedImage(imgWidth * width, imgHeight * height, BufferedImage.TYPE_INT_RGB);
 		Graphics g = out.getGraphics();
 		for(int x = 0; x < width; x++) {
@@ -181,7 +182,7 @@ public class Downloader extends Thread {
 
         @return adjusted LocalDateTime object
 	 */
-	LocalDateTime primeTime(LocalDateTime dtime) {
+	private LocalDateTime primeTime(LocalDateTime dtime) {
         dtime = dtime.plusMinutes(distanceToNearestTenth(dtime.getMinute()));
         return dtime;
     }
@@ -192,7 +193,7 @@ public class Downloader extends Thread {
      * @param val number to adjust to nearest 10th
      * @return adjusted number
      */
-	int distanceToNearestTenth(int val) {
+	private int distanceToNearestTenth(int val) {
 		return (((val + 5) / 10) * 10) - val;
 	}
 }
