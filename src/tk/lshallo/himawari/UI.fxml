@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox minHeight="240.0" minWidth="320.0" prefHeight="720.0" prefWidth="929.0" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+                  <MenuItem mnemonicParsing="false" text="New" />
+            <MenuItem fx:id="MenuItemSaveAs" mnemonicParsing="false" onAction="#saveImage" text="Save As…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu disable="true" mnemonicParsing="false" text="Edit" visible="false">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Undo" />
+            <MenuItem mnemonicParsing="false" text="Redo" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About Himawari" />
+                  <MenuItem mnemonicParsing="false" text="About Himawari Downloader" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <SplitPane dividerPositions="0.2510869565217391" layoutX="540.0" layoutY="258.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" SplitPane.resizableWithParent="false">
+                     <children>
+                        <ProgressBar fx:id="progressBar" layoutX="17.0" layoutY="632.0" prefWidth="200.0" progress="0.0" />
+                        <DatePicker fx:id="DatePicker" layoutX="30.0" layoutY="38.0" onAction="#updateDate" />
+                        <ChoiceBox fx:id="ChoiceBoxResolution" layoutX="30.0" layoutY="146.0" prefHeight="25.0" prefWidth="174.0" />
+                        <CheckBox fx:id="CheckBoxMultithreadedDownloads" layoutX="30.0" layoutY="201.0" mnemonicParsing="false" onAction="#updateAdvanced" prefHeight="17.0" prefWidth="174.0" text="Multithreaded Downloads" />
+                        <Button fx:id="ButtonDownload" layoutX="146.0" layoutY="600.0" mnemonicParsing="false" onAction="#download" text="Download" />
+                        <Text layoutX="30.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Advanced">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="ButtonShowPreview" layoutX="17.0" layoutY="600.0" mnemonicParsing="false" onAction="#showPreview" text="Show Preview" />
+                        <TextField fx:id="TextFieldTime" layoutX="30.0" layoutY="92.0" onAction="#updateTime" prefHeight="25.0" prefWidth="174.0" />
+                        <Text layoutX="30.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="30.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time (UTC)">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="30.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resolution">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <ProgressIndicator fx:id="Spinner" layoutX="112.0" layoutY="600.0" prefHeight="26.0" prefWidth="26.0" />
+                        <Button fx:id="ButtonSaveImage" layoutX="17.0" layoutY="654.0" mnemonicParsing="false" onAction="#saveImage" text="Save Image" />
+                     </children>
+                  </AnchorPane>
+                <AnchorPane fx:id="imageViewParent" minHeight="0.0" minWidth="0.0" prefHeight="693.0" prefWidth="722.0" SplitPane.resizableWithParent="false">
+                     <children>
+                        <ImageView fx:id="imageView" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>
