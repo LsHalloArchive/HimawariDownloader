@@ -132,15 +132,11 @@ class UI {
                             JOptionPane.showMessageDialog(null, "File format not supported!", "Format not supported!", JOptionPane.ERROR_MESSAGE);
                         }
 
+
     					Object[] answers = {"Yes", "No"};
                         if(JOptionPane.showOptionDialog(null, "Path: " + f.getPath() + "\nOpen image?", "Image saved successfully!", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, answers, answers[0]) == 0) {
                             Desktop.getDesktop().open(f);
                         }
-						/*Alert al = new Alert(AlertType.INFORMATION);
-						al.setTitle("Image saved!");
-						al.setHeaderText("Image saved successfully!");
-						al.setContentText("Path: " + f.getPath());
-						al.showAndWait();*/
     				} catch (IOException e) {
     					e.printStackTrace();
     				}
