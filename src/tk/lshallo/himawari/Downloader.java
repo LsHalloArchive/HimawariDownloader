@@ -84,6 +84,7 @@ public class Downloader extends Thread {
 				try {
 					URL url = new URL("https://himawari8-dl.nict.go.jp/himawari8/img/D531106/" + res + "d/550/" + df.format(dt) + "/" + tf.format(dt) + "_" + x + "_" + y + ".png");
 					src[x * res + y] = ImageIO.read(url);
+					Himawari.controller.increaseProgress();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
