@@ -1,5 +1,6 @@
 package tk.lshallo.himawari;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +9,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
+import com.sun.deploy.util.ArrayUtil;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -111,11 +114,33 @@ class UI {
     void saveImage(ActionEvent event) {
     	ButtonSaveImage.setDisable(true);
     	setButtons(false);
-    	File f = new File(System.getProperty("user.home") + "/" + df.format(LocalDateTime.of(DatePicker.getValue(), LocalTime.parse(TextFieldTime.getText()).withSecond(0))) + ".png");
+    	LocalDateTime dt = dl.primeTime(LocalDateTime.of(DatePicker.getValue(), LocalTime.parse(TextFieldTime.getText()).withSecond(0)));
+    	File f = new File(System.getProperty("user.home") + "/" + df.format(dt) + ".png");
     	Thread th =	new Thread(() -> {
     			if(result != null) {
     	    		try {
-    					ImageIO.write(result, "png", f);
+    	    		    boolean formatSupported = false;
+    	    		    for(String format : ImageIO.getWriterFileSuffixes()) {
+                            if (format.equals("png")) {
+                                formatSupported = true;
+                            }
+                        }
+
+                        if (formatSupported) {
+                            ImageIO.write(result, "png", f);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "File format not supported!", "Format not supported!", JOptionPane.ERROR_MESSAGE);
+                        }
+
+    					Object[] answers = {"Yes", "No"};
+                        if(JOptionPane.showOptionDialog(null, "Path: " + f.getPath() + "\nOpen image?", "Image saved successfully!", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, answers, answers[0]) == 0) {
+                            Desktop.getDesktop().open(f);
+                        }
+						/*Alert al = new Alert(AlertType.INFORMATION);
+						al.setTitle("Image saved!");
+						al.setHeaderText("Image saved successfully!");
+						al.setContentText("Path: " + f.getPath());
+						al.showAndWait();*/
     				} catch (IOException e) {
     					e.printStackTrace();
     				}
@@ -124,16 +149,6 @@ class UI {
     	    	ButtonSaveImage.setDisable(false);
     	});
     	th.start();
-    	try {
-			th.join();
-			Alert al = new Alert(AlertType.INFORMATION);
-	    	al.setTitle("Image saved!");
-	    	al.setHeaderText("Image saved successfully!");
-	    	al.setContentText("Path: " + f.getPath());
-	    	al.showAndWait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
     }
 
     @FXML

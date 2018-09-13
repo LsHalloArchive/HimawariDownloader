@@ -187,8 +187,8 @@ public class Downloader extends Thread {
 
         @return adjusted LocalDateTime object
 	 */
-	private LocalDateTime primeTime(LocalDateTime dtime) {
-        dtime = dtime.plusMinutes(distanceToNearestTenth(dtime.getMinute()));
+	LocalDateTime primeTime(LocalDateTime dtime) {
+	    dtime = dtime.plusMinutes(distanceToNearestTenth(dtime.getMinute()));
         return dtime;
     }
 
