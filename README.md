@@ -20,4 +20,4 @@ Attention! 11000px option produces 150+MB images!
 * [ ] Update progress bar corresponding to status
 
 # Download
-TBD
+Get the latest version from the releases page: https://github.com/LsHallo/HimawariDownloader/releases
