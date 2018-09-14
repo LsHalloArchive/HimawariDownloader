@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox minHeight="240.0" minWidth="320.0" prefHeight="720.0" prefWidth="929.0" xmlns:fx="http://javafx.com/fxml/1">
+<VBox minHeight="240.0" minWidth="320.0" prefHeight="720.0" prefWidth="929.0" xmlns="http://javafx.com/javafx/8.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -87,6 +87,7 @@
                         </Text>
                         <ProgressIndicator fx:id="Spinner" layoutX="112.0" layoutY="600.0" prefHeight="26.0" prefWidth="26.0" />
                         <Button fx:id="ButtonSaveImage" layoutX="17.0" layoutY="654.0" mnemonicParsing="false" onAction="#saveImage" text="Save Image" />
+                        <CheckBox fx:id="checkBoxCompression" layoutX="19.0" layoutY="575.0" mnemonicParsing="false" onAction="#changeCompression" text="Compression" />
                      </children>
                   </AnchorPane>
                 <AnchorPane fx:id="imageViewParent" minHeight="0.0" minWidth="0.0" prefHeight="693.0" prefWidth="722.0" SplitPane.resizableWithParent="false">

@@ -2,8 +2,7 @@ package tk.lshallo.himawari;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -11,12 +10,14 @@ import java.time.format.DateTimeFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import com.sun.deploy.util.ArrayUtil;
+import com.googlecode.pngtastic.core.PngImage;
+import com.googlecode.pngtastic.core.PngOptimizer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -28,6 +29,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import jdk.nashorn.internal.scripts.JO;
+
 
 class UI {
 
@@ -45,6 +48,9 @@ class UI {
 
     @FXML
     private CheckBox CheckBoxMultithreadedDownloads;
+
+    @FXML
+    private CheckBox checkBoxCompression;
 
     @FXML
     private Button ButtonDownload;
@@ -70,6 +76,7 @@ class UI {
     private BufferedImage result;
     private Downloader dl = new Downloader();
     private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm");
+    private boolean compressionLastEnabled = false;
     
     void setup() {
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Thumbnail (550px)", 1));
@@ -78,6 +85,19 @@ class UI {
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Medium (4400px)", 8));
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("High (8800px)", 16));
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Very High (11000px)", 20));
+    	ChoiceBoxResolution.setValue(new ResolutionChoice("Medium (4400px)", 8));
+    	ChoiceBoxResolution.setOnAction(event -> {
+            System.out.println("EventHandler");
+            int resolution = ChoiceBoxResolution.getValue().getValue();
+            if(resolution > 8) {
+                compressionLastEnabled = checkBoxCompression.isSelected();
+                checkBoxCompression.setSelected(false);
+                checkBoxCompression.setDisable(true);
+            } else {
+                checkBoxCompression.setDisable(false);
+                checkBoxCompression.setSelected(compressionLastEnabled);
+            }
+        });
     	
     	imageView.setImage(new Image(this.getClass().getResourceAsStream("HimawariThumb.png")));
     	imageView.setFitWidth(imageViewParent.getWidth());
@@ -96,16 +116,21 @@ class UI {
 		new Thread(() -> {
 				imageView.setFitWidth(imageViewParent.getWidth());
 
-				if(!CheckBoxMultithreadedDownloads.isSelected()) {
-					result = dl.single(resolution.getValue(), LocalDateTime.of(DatePicker.getValue(), LocalTime.parse(TextFieldTime.getText()).withSecond(0)));
-				} else {
-					result = dl.multi(resolution.getValue(), LocalDateTime.of(DatePicker.getValue(), LocalTime.parse(TextFieldTime.getText()).withSecond(0)));
-				}
-				imageView.setImage(SwingFXUtils.toFXImage(result, null));
-
-				progressBar.setProgress(1d);
-				ButtonSaveImage.setDisable(false);
-				setButtons(true);
+				try {
+                    if (!CheckBoxMultithreadedDownloads.isSelected()) {
+                        result = dl.single(resolution.getValue(), LocalDateTime.of(DatePicker.getValue(), LocalTime.parse(TextFieldTime.getText()).withSecond(0)));
+                    } else {
+                        result = dl.multi(resolution.getValue(), LocalDateTime.of(DatePicker.getValue(), LocalTime.parse(TextFieldTime.getText()).withSecond(0)));
+                    }
+                    imageView.setImage(SwingFXUtils.toFXImage(result, null));
+                    progressBar.setProgress(1d);
+                    ButtonSaveImage.setDisable(false);
+                    setButtons(true);
+                } catch (Exception e) {
+                    progressBar.setProgress(0d);
+                    JOptionPane.showMessageDialog(null, "Download of image failed!\nPlease ensure you have entered a valid date and time. You also must choose a resolution.", "Error downloading image!", JOptionPane.ERROR_MESSAGE);
+                    setButtons(true);
+                }
 		}).start();
     	
     }
@@ -127,7 +152,25 @@ class UI {
                         }
 
                         if (formatSupported) {
-                            ImageIO.write(result, "png", f);
+                            if(!checkBoxCompression.isSelected()) {
+                                ImageIO.write(result, "png", f);
+                            } else {
+                                try {
+                                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                                    ImageIO.write(result, "png", os);
+                                    InputStream is = new ByteArrayInputStream(os.toByteArray());
+                                    PngImage img = new PngImage(is);
+                                    PngOptimizer optimizer = new PngOptimizer();
+                                    PngImage oImage = optimizer.optimize(img);
+
+                                    final ByteArrayOutputStream optimizedBytes = new ByteArrayOutputStream();
+                                    oImage.writeDataOutputStream(optimizedBytes);
+                                    oImage.export(f.getPath(), optimizedBytes.toByteArray());
+                                } catch (OutOfMemoryError e) {
+                                    JOptionPane.showMessageDialog(null, "You ran out of memory while compressing the image!\nProgram will now try to save image uncompressed.", "Out of memory!", JOptionPane.ERROR_MESSAGE);
+                                    ImageIO.write(result, "png", f);
+                                }
+                            }
                         } else {
                             JOptionPane.showMessageDialog(null, "File format not supported!", "Format not supported!", JOptionPane.ERROR_MESSAGE);
                         }
@@ -154,8 +197,13 @@ class UI {
     	
     	new Thread(() -> {
     			imageView.setFitWidth(imageViewParent.getWidth());
-    	    	BufferedImage preview = dl.preview(LocalDateTime.of(DatePicker.getValue(), LocalTime.parse(TextFieldTime.getText()).withSecond(0)));
-    	    	imageView.setImage(SwingFXUtils.toFXImage(preview, null));
+    			try {
+                    BufferedImage preview = dl.preview(LocalDateTime.of(DatePicker.getValue(), LocalTime.parse(TextFieldTime.getText()).withSecond(0)));
+                    imageView.setImage(SwingFXUtils.toFXImage(preview, null));
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Download of image failed!\nPlease ensure you have entered a valid date and time.", "Error downloading image!", JOptionPane.ERROR_MESSAGE);
+                    setButtons(true);
+                }
     	    	
     	    	setButtons(true);
     	}).start();
@@ -181,6 +229,13 @@ class UI {
     @FXML
     void updateTime(ActionEvent event) {
 
+    }
+
+    @FXML
+    void changeCompression(ActionEvent event) {
+        if(checkBoxCompression.isSelected()) {
+            JOptionPane.showMessageDialog(null, "Compression is very CPU intensive and may take several minutes, depending on your hardware. \nIt is not available for images >4400px.", "Attention!", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private int progress = 0;
