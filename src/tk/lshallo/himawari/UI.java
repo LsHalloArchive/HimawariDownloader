@@ -3,8 +3,10 @@ package tk.lshallo.himawari;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import javax.imageio.ImageIO;
@@ -76,16 +78,18 @@ class UI {
     private BufferedImage result;
     private Downloader dl = new Downloader();
     private DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm");
+    private DateTimeFormatter dfText = DateTimeFormatter.ofPattern("HH:mm");
     private boolean compressionLastEnabled = false;
     
     void setup() {
+        ResolutionChoice defaultRes = new ResolutionChoice("Medium (4400px)", 8);
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Thumbnail (550px)", 1));
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Very Low (1100px)", 2));
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Low (2200px)", 4));
-    	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Medium (4400px)", 8));
+    	ChoiceBoxResolution.getItems().add(defaultRes);
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("High (8800px)", 16));
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Very High (11000px)", 20));
-    	ChoiceBoxResolution.setValue(new ResolutionChoice("Medium (4400px)", 8));
+    	ChoiceBoxResolution.setValue(defaultRes);
     	ChoiceBoxResolution.setOnAction(event -> {
             System.out.println("EventHandler");
             int resolution = ChoiceBoxResolution.getValue().getValue();
@@ -98,11 +102,16 @@ class UI {
                 checkBoxCompression.setSelected(compressionLastEnabled);
             }
         });
+
+    	LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC")).minusMinutes(30).withSecond(0);
+    	DatePicker.setValue(now.toLocalDate());
+    	TextFieldTime.setText(dfText.format(now));
     	
     	imageView.setImage(new Image(this.getClass().getResourceAsStream("HimawariThumb.png")));
     	imageView.setFitWidth(imageViewParent.getWidth());
     	Spinner.setVisible(false);
     	ButtonSaveImage.setDisable(true);
+    	CheckBoxMultithreadedDownloads.setSelected(true);
     }
 
     @FXML
