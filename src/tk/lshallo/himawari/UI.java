@@ -14,11 +14,8 @@ import javax.swing.*;
 
 import com.googlecode.pngtastic.core.PngImage;
 import com.googlecode.pngtastic.core.PngOptimizer;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -31,7 +28,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import jdk.nashorn.internal.scripts.JO;
 
 
 class UI {
@@ -91,7 +87,6 @@ class UI {
     	ChoiceBoxResolution.getItems().add(new ResolutionChoice("Very High (11000px)", 20));
     	ChoiceBoxResolution.setValue(defaultRes);
     	ChoiceBoxResolution.setOnAction(event -> {
-            System.out.println("EventHandler");
             int resolution = ChoiceBoxResolution.getValue().getValue();
             if(resolution > 8) {
                 compressionLastEnabled = checkBoxCompression.isSelected();
