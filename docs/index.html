@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Himawari Downloder lets you download gorgeous sattelite images from the Japanese weather satellite Himawari 8 in full resolution.">
     <meta name="author" content="LsHallo">
+    <link rel="icon" type="image/png" href="img/logo.png" />
 
     <title>Himawari Downloader</title>
 
@@ -45,7 +46,7 @@
       </div>
     </nav>
 
-    <header class="py-5 bg-image-full" style="background-image: url('img/header.png');">
+    <header class="py-5 bg-image-full top" style="background-image: url('img/header-small.jpg');">
         <div style="height: 200px;"></div>
     </header>
 
@@ -58,7 +59,7 @@
       </div>
     </section>
 
-    <section class="py-5 bg-image-full" style="background-image: url('img/footer.png');">
+    <section class="py-5 bg-image-full bottom" style="background-image: url('img/footer-small.jpg');">
       <div style="height: 200px;"></div>
     </section>
 
@@ -80,6 +81,16 @@
 		  });
 		}
 		GetLatestReleaseInfo();
+
+		/*$(function() {
+		    for(let i = 0; i < 2; i++) {
+                var dlImage = new Image();
+                dlImage.onload = function() {
+                    $('.py-5.bg-image-full.' + (i == 0?'top':'bottom')).css('background-image', 'url(' + this.src + ')');
+                }
+                dlImage.src = "img/" + (i == 0?"header":"footer") + ".png";
+            }
+		});*/
 	</script>
   </body>
 
