@@ -20,5 +20,5 @@ Attention! 11000px option produces 150+MB images!
 * [x] Update progress bar corresponding to status
 * [x] Make saving a new thread so the UI doesn't become unresponsive
 
-# Download
+# Download [![](https://img.shields.io/github/downloads/lshallo/HimawariDownloader/total.svg?style=flat-square)](https://github.com/LsHallo/himawaridownloader/releases/latest) [![HitCount](http://hits.dwyl.io/LsHallo/himawaridownloader.svg)](https://github.com/LsHallo/himawaridownloader)
 Get the latest version from the releases page: https://github.com/LsHallo/HimawariDownloader/releases
